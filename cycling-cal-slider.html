@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cycling Cal">
+  <title>Cycling Calorie Calculator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:    #1A1A2E;
+      --dark2:   #2E2E4A;
+      --muted:   #9A9ABF;
+      --muted2:  #6A6A9A;
+      --bg:      #F7F4F0;
+      --white:   #FFFFFF;
+      --divider: #F0EDE8;
+      --orange:  #E8623A;
+      --green:   #4CAF82;
+      --amber:   #F5A623;
+      --red:     #C0392B;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      font-family: -apple-system, 'Helvetica Neue', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      max-width: 480px;
+      margin: 0 auto;
+      padding-bottom: env(safe-area-inset-bottom, 24px);
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 52px 20px 16px;
+      background: var(--dark);
+    }
+    .header-text h1 {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .header-text p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      margin: 16px 16px 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    .input-row { padding: 16px 20px; }
+    .divider   { height: 1px; background: var(--divider); margin: 0 20px; }
+
+    .input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .input-label {
+      font-size: 11px;
+      color: #888;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .input-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .input-value {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .unit-toggle {
+      font-size: 11px;
+      color: var(--orange);
+      background: rgba(232,98,58,0.1);
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-weight: 700;
+      -webkit-appearance: none;
+    }
+    .unit-toggle:active { opacity: 0.7; }
+
+    /* ── Sliders ── */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--divider);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 2px 6px rgba(232,98,58,0.4);
+    }
+
+    .effort-pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 3px 10px;
+      margin-top: 10px;
+    }
+
+    /* ── Result ── */
+    .result {
+      background: var(--dark);
+      border-radius: 16px;
+      margin: 16px 16px 0;
+      padding: 24px 24px 20px;
+      box-shadow: 0 4px 20px rgba(26,26,46,0.25);
+      text-align: center;
+    }
+    .result-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .result-number {
+      color: #fff;
+      font-size: 58px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+    .result-unit {
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0;
+      margin-left: 4px;
+    }
+    .result-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 8px;
+      margin-bottom: 14px;
+    }
+    .effort-bar-bg {
+      height: 4px;
+      background: var(--dark2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .effort-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.25s ease, background 0.25s ease;
+    }
+    .result-note {
+      color: var(--muted2);
+      font-size: 11px;
+      font-style: italic;
+    }
+
+    /* ── Band reference ── */
+    .section-label {
+      font-size: 11px;
+      color: #aaa;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 14px 20px 4px;
+    }
+    .band-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 20px;
+      border-radius: 8px;
+      margin: 0 4px;
+      transition: background 0.2s;
+    }
+    .band-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .band-label {
+      font-size: 13px;
+      color: #333;
+      font-family: 'Menlo', 'Courier New', monospace;
+      display: block;
+    }
+    .band-met {
+      font-size: 11px;
+      font-weight: 700;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .footer {
+      font-size: 11px;
+      color: #bbb;
+      text-align: center;
+      padding: 16px 24px 32px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <svg width="30" height="30" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <circle cx="7"  cy="20" r="5" stroke="#E8623A" stroke-width="2" fill="none"/>
+      <circle cx="21" cy="20" r="5" stroke="#E8623A" stroke-width="2" fill="none"/>
+      <path d="M7 20 L14 8 L21 20" stroke="#E8623A" stroke-width="2" stroke-linejoin="round" fill="none"/>
+      <circle cx="14" cy="8" r="2" fill="#E8623A"/>
+      <path d="M10 14 L21 14" stroke="#E8623A" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div class="header-text">
+      <h1>Cycling Calorie Calc</h1>
+      <p>Road &amp; outdoor cycling</p>
+    </div>
+  </div>
+
+  <!-- Inputs -->
+  <div class="card">
+
+    <!-- Weight -->
+    <div class="input-row">
+      <div class="input-header">
+        <span class="input-label">Your weight</span>
+        <div class="input-right">
+          <span class="input-value" id="weight-display">86 kg</span>
+          <button class="unit-toggle" id="weight-unit-btn" onclick="toggleWeightUnit()">lbs</button>
+        </div>
+      </div>
+      <input type="range" id="weight-slider" min="40" max="150" step="1" value="86" oninput="update()">
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Speed -->
+    <div class="input-row">
+      <div class="input-header">
+        <span class="input-label">Average speed</span>
+        <div class="input-right">
+          <span class="input-value" id="speed-display">22 km/h</span>
+          <button class="unit-toggle" id="speed-unit-btn" onclick="toggleSpeedUnit()">mph</button>
+        </div>
+      </div>
+      <input type="range" id="speed-slider" min="10" max="36" step="0.5" value="22" oninput="update()">
+      <div class="effort-pill" id="effort-pill"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Duration -->
+    <div class="input-row">
+      <div class="input-header">
+        <span class="input-label">Duration</span>
+        <div class="input-right">
+          <span class="input-value" id="duration-display">1 hr</span>
+        </div>
+      </div>
+      <input type="range" id="duration-slider" min="10" max="360" step="5" value="60" oninput="update()">
+    </div>
+
+  </div>
+
+  <!-- Result -->
+  <div class="result">
+    <div class="result-label">Calories burned</div>
+    <div class="result-number" id="result-cal">—<span class="result-unit">kcal</span></div>
+    <div class="result-sub" id="result-sub"></div>
+    <div class="effort-bar-bg">
+      <div class="effort-bar-fill" id="effort-bar" style="width:0%"></div>
+    </div>
+    <div class="result-note" id="result-note"></div>
+  </div>
+
+  <!-- Band reference -->
+  <div class="card" id="band-card"></div>
+
+  <div class="footer">
+    Calorie estimates use MET values from the Compendium of Physical Activities.<br>
+    Results vary with terrain, fitness, and equipment.
+  </div>
+
+<script>
+  // ── Data ──────────────────────────────────────────────────────────────────
+  const BANDS = [
+    { label: "< 16 km/h   easy spin / recovery",  kmhMin: 0,   kmhMax: 15.9, met: 4.0,  effort: "Easy",      color: "#4CAF82" },
+    { label: "16–19 km/h  light / commute pace",   kmhMin: 16,  kmhMax: 18.9, met: 6.0,  effort: "Light",     color: "#7BC67E" },
+    { label: "19–22 km/h  moderate / club ride",   kmhMin: 19,  kmhMax: 21.9, met: 8.0,  effort: "Moderate",  color: "#F5A623" },
+    { label: "22–26 km/h  brisk / sportive",       kmhMin: 22,  kmhMax: 25.9, met: 10.0, effort: "Hard",      color: "#E8623A" },
+    { label: "26–30 km/h  fast / training pace",   kmhMin: 26,  kmhMax: 29.9, met: 12.0, effort: "Very Hard", color: "#D04020" },
+    { label: "> 30 km/h   racing / TT pace",       kmhMin: 30,  kmhMax: 999,  met: 15.8, effort: "Max",       color: "#C0392B" },
+  ];
+
+  const MET_MIN = 4, MET_MAX = 15.8;
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  let weightUnit = "kg";   // "kg" | "lbs"
+  let speedUnit  = "kmh";  // "kmh" | "mph"
+
+  // Internal values always in kg / km/h
+  let weightKg  = 86;
+  let speedKmh  = 22;
+  let durationMin = 60;
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function getBand(kmh) {
+    return BANDS.find(b => kmh >= b.kmhMin && kmh <= b.kmhMax) || null;
+  }
+
+  function fmtDuration(min) {
+    if (min < 60) return min + " min";
+    const h = Math.floor(min / 60), m = min % 60;
+    return m === 0 ? h + " hr" : h + " hr " + m + " min";
+  }
+
+  function fmtNum(n) {
+    return n.toLocaleString("en-GB");
+  }
+
+  // ── Render bands ──────────────────────────────────────────────────────────
+  function renderBands(activeMet) {
+    const card = document.getElementById("band-card");
+    let html = '<div class="section-label">Speed &amp; effort reference</div>';
+    BANDS.forEach(b => {
+      const active = b.met === activeMet;
+      html += `
+        <div class="band-row" style="background:${active ? b.color + '18' : 'transparent'}">
+          <div class="band-dot" style="background:${b.color}"></div>
+          <div>
+            <span class="band-label">${b.label}</span>
+            <span class="band-met" style="color:${b.color}">MET ${b.met} · ${b.effort}</span>
+          </div>
+        </div>`;
+    });
+    card.innerHTML = html;
+  }
+
+  // ── Main update ───────────────────────────────────────────────────────────
+  function update() {
+    // Read sliders
+    const ws = document.getElementById("weight-slider");
+    const ss = document.getElementById("speed-slider");
+    const ds = document.getElementById("duration-slider");
+
+    // Convert displayed slider value → internal
+    if (weightUnit === "lbs") {
+      weightKg = parseFloat(ws.value) * 0.453592;
+    } else {
+      weightKg = parseFloat(ws.value);
+    }
+
+    if (speedUnit === "mph") {
+      speedKmh = parseFloat(ss.value) * 1.60934;
+    } else {
+      speedKmh = parseFloat(ss.value);
+    }
+
+    durationMin = parseInt(ds.value);
+
+    // Weight display
+    const wDisplay = weightUnit === "lbs"
+      ? Math.round(parseFloat(ws.value)) + " lbs"
+      : Math.round(parseFloat(ws.value)) + " kg";
+    document.getElementById("weight-display").textContent = wDisplay;
+
+    // Speed display
+    const sv = parseFloat(ss.value);
+    const sDisplay = speedUnit === "mph"
+      ? sv.toFixed(1) + " mph"
+      : sv.toFixed(1) + " km/h";
+    document.getElementById("speed-display").textContent = sDisplay;
+
+    // Duration display
+    document.getElementById("duration-display").textContent = fmtDuration(durationMin);
+
+    // Band & effort
+    const band = getBand(speedKmh);
+    if (!band) return;
+
+    const pill = document.getElementById("effort-pill");
+    pill.textContent = band.effort + " effort · MET " + band.met;
+    pill.style.background = band.color + "22";
+    pill.style.color = band.color;
+
+    // Calories
+    const hrs = durationMin / 60;
+    const cal = Math.round(band.met * weightKg * hrs);
+    document.getElementById("result-cal").innerHTML =
+      fmtNum(cal) + '<span class="result-unit">kcal</span>';
+
+    // Distance
+    const distKm = (speedKmh * hrs).toFixed(1);
+    const distMi = (distKm * 0.621371).toFixed(1);
+    document.getElementById("result-sub").textContent =
+      distKm + " km · " + distMi + " mi covered";
+
+    // Effort bar
+    const pct = Math.min(100, ((band.met - MET_MIN) / (MET_MAX - MET_MIN)) * 100);
+    const bar = document.getElementById("effort-bar");
+    bar.style.width = pct + "%";
+    bar.style.background = band.color;
+
+    // Note
+    document.getElementById("result-note").textContent =
+      "MET " + band.met + " · " + band.effort + " effort";
+
+    // Band table
+    renderBands(band.met);
+  }
+
+  // ── Unit toggles ──────────────────────────────────────────────────────────
+  function toggleWeightUnit() {
+    const slider = document.getElementById("weight-slider");
+    const btn    = document.getElementById("weight-unit-btn");
+    const current = parseFloat(slider.value);
+
+    if (weightUnit === "kg") {
+      // Switch to lbs
+      weightUnit = "lbs";
+      slider.min  = 88;
+      slider.max  = 330;
+      slider.step = 1;
+      slider.value = Math.round(current * 2.20462);
+      btn.textContent = "kg";
+    } else {
+      // Switch to kg
+      weightUnit = "kg";
+      slider.min  = 40;
+      slider.max  = 150;
+      slider.step = 1;
+      slider.value = Math.round(current / 2.20462);
+      btn.textContent = "lbs";
+    }
+    update();
+  }
+
+  function toggleSpeedUnit() {
+    const slider = document.getElementById("speed-slider");
+    const btn    = document.getElementById("speed-unit-btn");
+    const current = parseFloat(slider.value);
+
+    if (speedUnit === "kmh") {
+      // Switch to mph
+      speedUnit = "mph";
+      slider.min  = 6;
+      slider.max  = 22;
+      slider.step = 0.5;
+      slider.value = (current / 1.60934).toFixed(1);
+      btn.textContent = "km/h";
+    } else {
+      // Switch to km/h
+      speedUnit = "kmh";
+      slider.min  = 10;
+      slider.max  = 36;
+      slider.step = 0.5;
+      slider.value = (current * 1.60934).toFixed(1);
+      btn.textContent = "mph";
+    }
+    update();
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  update();
+</script>
+</body>
+</html>
