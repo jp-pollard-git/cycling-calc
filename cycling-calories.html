@@ -38,66 +38,45 @@ hr { border: none; border-top: 1px solid #F0EDE8; }
   text-transform: uppercase; letter-spacing: 0.6px;
   margin-bottom: 12px; display: block;
 }
-
-/* Stepper control */
-.stepper {
+.row-top {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 0;
+  align-items: center;
+  margin-bottom: 14px;
 }
-.step-btn {
-  width: 52px; height: 52px;
-  border-radius: 12px;
-  border: none;
-  background: #F0EDE8;
-  color: #1A1A2E;
-  font-size: 26px;
-  font-weight: 300;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  flex-shrink: 0;
-}
-.step-btn:active { background: #E8623A; color: #fff; }
-
-.step-mid {
-  flex: 1;
-  text-align: center;
-}
-.step-val {
-  font-size: 28px;
-  font-weight: 800;
-  color: #1A1A2E;
-  display: block;
-  line-height: 1;
-}
-.step-unit {
-  font-size: 13px;
-  color: #888;
-  margin-top: 3px;
-  display: block;
-}
+.val-wrap { display: flex; align-items: center; gap: 8px; }
+.val { font-size: 18px; font-weight: 800; color: #1A1A2E; min-width: 90px; text-align: right; }
 .tog {
   font-size: 11px; font-weight: 700;
   color: #E8623A;
   background: rgba(232,98,58,0.12);
   border: none; border-radius: 6px;
-  padding: 4px 9px; cursor: pointer;
-  margin-top: 5px;
-  display: inline-block;
+  padding: 5px 10px; cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%; height: 5px;
+  border-radius: 3px;
+  background: #E8E4DF;
+  outline: none; cursor: pointer; display: block;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: #E8623A;
+  box-shadow: 0 2px 8px rgba(232,98,58,0.5);
+  cursor: pointer;
 }
 
 .pill {
   display: inline-block;
   font-size: 12px; font-weight: 700;
-  border-radius: 20px; padding: 4px 12px;
-  margin-top: 12px;
+  border-radius: 20px; padding: 3px 10px; margin-top: 10px;
 }
 
-/* Result */
 .result {
   background: #1A1A2E;
   border-radius: 16px;
@@ -114,7 +93,6 @@ hr { border: none; border-top: 1px solid #F0EDE8; }
 .bar-fill { height: 5px; border-radius: 3px; }
 .rnote { color: #6A6A9A; font-size: 11px; font-style: italic; }
 
-/* Band table */
 .slbl {
   font-size: 11px; color: #aaa; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.8px;
@@ -154,59 +132,52 @@ hr { border: none; border-top: 1px solid #F0EDE8; }
 
   <!-- Weight -->
   <div class="row">
-    <span class="lbl">Your weight</span>
-    <div class="stepper">
-      <button class="step-btn" id="wDown">&#8722;</button>
-      <div class="step-mid">
-        <span class="step-val" id="wVal">86</span>
-        <span class="step-unit" id="wUnit">kg</span>
-        <button class="tog" id="wTog">switch to lbs</button>
+    <div class="row-top">
+      <span class="lbl">Your weight</span>
+      <div class="val-wrap">
+        <span class="val" id="wDisp">86 kg</span>
+        <button class="tog" id="wBtn">lbs</button>
       </div>
-      <button class="step-btn" id="wUp">&#43;</button>
     </div>
+    <input type="range" id="wSlider" min="40" max="150" step="1" value="86">
   </div>
 
   <hr>
 
   <!-- Speed -->
   <div class="row">
-    <span class="lbl">Average speed</span>
-    <div class="stepper">
-      <button class="step-btn" id="sDown">&#8722;</button>
-      <div class="step-mid">
-        <span class="step-val" id="sVal">22</span>
-        <span class="step-unit" id="sUnit">km/h</span>
-        <button class="tog" id="sTog">switch to mph</button>
+    <div class="row-top">
+      <span class="lbl">Average speed</span>
+      <div class="val-wrap">
+        <span class="val" id="sDisp">22.0 km/h</span>
+        <button class="tog" id="sBtn">mph</button>
       </div>
-      <button class="step-btn" id="sUp">&#43;</button>
     </div>
-    <div class="pill" id="pill" style="background:#F5A62322;color:#F5A623">Moderate effort &middot; MET 8</div>
+    <input type="range" id="sSlider" min="10" max="36" step="0.5" value="22">
+    <div class="pill" id="pill"></div>
   </div>
 
   <hr>
 
   <!-- Duration -->
   <div class="row">
-    <span class="lbl">Duration</span>
-    <div class="stepper">
-      <button class="step-btn" id="dDown">&#8722;</button>
-      <div class="step-mid">
-        <span class="step-val" id="dVal">60</span>
-        <span class="step-unit">minutes</span>
+    <div class="row-top">
+      <span class="lbl">Duration</span>
+      <div class="val-wrap">
+        <span class="val" id="dDisp">1 hr</span>
       </div>
-      <button class="step-btn" id="dUp">&#43;</button>
     </div>
+    <input type="range" id="dSlider" min="10" max="360" step="5" value="60">
   </div>
 
 </div>
 
-<!-- Result -->
 <div class="result">
   <div class="rlbl">Calories burned</div>
-  <div class="rnum" id="rCal">723 <span class="runit">kcal</span></div>
-  <div class="rsub" id="rSub">22.0 km &middot; 13.7 mi covered</div>
-  <div class="bar-bg"><div class="bar-fill" id="rBar" style="width:52%;background:#E8623A"></div></div>
-  <div class="rnote" id="rNote">MET 10 &middot; Hard effort</div>
+  <div class="rnum" id="rCal">— <span class="runit">kcal</span></div>
+  <div class="rsub" id="rSub"></div>
+  <div class="bar-bg"><div class="bar-fill" id="rBar" style="width:0%"></div></div>
+  <div class="rnote" id="rNote"></div>
 </div>
 
 <div class="card" id="bandCard"></div>
@@ -226,12 +197,46 @@ var BANDS = [
   { label:"> 30 km/h   racing / TT",      min:30,  max:9999, met:15.8, effort:"Max",       color:"#C0392B" }
 ];
 
-// State — all internal values in kg and km/h
-var wKg  = 86;
-var sKmh = 22;
-var dMin = 60;
-var wUnit = "kg";   // "kg" | "lbs"
-var sUnit = "kmh";  // "kmh" | "mph"
+// Load saved prefs
+var saved = {};
+try { saved = JSON.parse(localStorage.getItem("cyclingCalc") || "{}"); } catch(e) {}
+
+var wUnit = saved.wUnit || "kg";
+var sUnit = saved.sUnit || "kmh";
+
+// Set up sliders with saved values
+var wSlider = document.getElementById("wSlider");
+var sSlider = document.getElementById("sSlider");
+var dSlider = document.getElementById("dSlider");
+
+// Restore weight slider
+if (wUnit === "lbs") {
+  wSlider.min = 88; wSlider.max = 330; wSlider.step = 1;
+  document.getElementById("wBtn").textContent = "kg";
+}
+wSlider.value = saved.wSlider || 86;
+
+// Restore speed slider
+if (sUnit === "mph") {
+  sSlider.min = 6; sSlider.max = 22; sSlider.step = 0.5;
+  document.getElementById("sBtn").textContent = "km/h";
+}
+sSlider.value = saved.sSlider || 22;
+
+// Restore duration
+dSlider.value = saved.dMin || 60;
+
+function save() {
+  try {
+    localStorage.setItem("cyclingCalc", JSON.stringify({
+      wUnit:   wUnit,
+      sUnit:   sUnit,
+      wSlider: parseFloat(wSlider.value),
+      sSlider: parseFloat(sSlider.value),
+      dMin:    parseInt(dSlider.value)
+    }));
+  } catch(e) {}
+}
 
 function getBand(kmh) {
   for (var i = 0; i < BANDS.length; i++) {
@@ -243,7 +248,7 @@ function getBand(kmh) {
 function fmtDur(m) {
   if (m < 60) return m + " min";
   var h = Math.floor(m/60), r = m%60;
-  return r ? h+"h "+r+"m" : h+" hr";
+  return r ? h + " hr " + r + " min" : h + " hr";
 }
 
 function drawBands(activeMet) {
@@ -259,32 +264,30 @@ function drawBands(activeMet) {
   document.getElementById("bandCard").innerHTML = html;
 }
 
-function render() {
-  // Weight display
-  var wDisplay = wUnit === "lbs" ? Math.round(wKg * 2.20462) : Math.round(wKg);
-  document.getElementById("wVal").textContent  = wDisplay;
-  document.getElementById("wUnit").textContent = wUnit;
+function recalc() {
+  var wRaw = parseFloat(wSlider.value);
+  var sRaw = parseFloat(sSlider.value);
+  var dRaw = parseInt(dSlider.value);
 
-  // Speed display
-  var sDisplay = sUnit === "mph" ? (sKmh / 1.60934).toFixed(1) : sKmh.toFixed(1);
-  document.getElementById("sVal").textContent  = sDisplay;
-  document.getElementById("sUnit").textContent = sUnit === "mph" ? "mph" : "km/h";
+  var kg  = (wUnit === "lbs") ? wRaw * 0.453592 : wRaw;
+  var kmh = (sUnit === "mph") ? sRaw * 1.60934  : sRaw;
 
-  // Duration
-  document.getElementById("dVal").textContent = dMin;
+  document.getElementById("wDisp").textContent =
+    (wUnit === "lbs") ? Math.round(wRaw) + " lbs" : Math.round(wRaw) + " kg";
+  document.getElementById("sDisp").textContent =
+    (sUnit === "mph") ? sRaw.toFixed(1) + " mph" : sRaw.toFixed(1) + " km/h";
+  document.getElementById("dDisp").textContent = fmtDur(dRaw);
 
-  // Band
-  var band = getBand(sKmh);
+  var band = getBand(kmh);
   var pill = document.getElementById("pill");
   pill.textContent = band.effort + " effort \u00b7 MET " + band.met;
   pill.style.background = band.color + "22";
   pill.style.color = band.color;
 
-  // Calories
-  var cal  = Math.round(band.met * wKg * (dMin/60));
-  var dkm  = (sKmh * dMin/60).toFixed(1);
-  var dmi  = (dkm * 0.621371).toFixed(1);
-  var pct  = Math.round(((band.met-4)/(15.8-4))*100);
+  var cal = Math.round(band.met * kg * (dRaw/60));
+  var dkm = (kmh * dRaw/60).toFixed(1);
+  var dmi = (dkm * 0.621371).toFixed(1);
+  var pct = Math.round(((band.met-4)/(15.8-4))*100);
 
   document.getElementById("rCal").innerHTML = cal.toLocaleString() + ' <span class="runit">kcal</span>';
   document.getElementById("rSub").innerHTML = dkm + " km &middot; " + dmi + " mi covered";
@@ -293,47 +296,49 @@ function render() {
   document.getElementById("rNote").textContent = "MET " + band.met + " \u00b7 " + band.effort + " effort";
 
   drawBands(band.met);
+  save();
 }
 
-// Weight buttons
-document.getElementById("wDown").onclick = function() {
-  wKg = Math.max(40, wKg - 1); render();
-};
-document.getElementById("wUp").onclick = function() {
-  wKg = Math.min(200, wKg + 1); render();
-};
-document.getElementById("wTog").onclick = function() {
-  wUnit = (wUnit === "kg") ? "lbs" : "kg";
-  this.textContent = "switch to " + (wUnit === "kg" ? "lbs" : "kg");
-  render();
+wSlider.oninput = recalc;
+wSlider.onchange = recalc;
+sSlider.oninput = recalc;
+sSlider.onchange = recalc;
+dSlider.oninput = recalc;
+dSlider.onchange = recalc;
+
+document.getElementById("wBtn").onclick = function() {
+  var v = parseFloat(wSlider.value);
+  if (wUnit === "kg") {
+    wUnit = "lbs";
+    wSlider.min = 88; wSlider.max = 330; wSlider.step = 1;
+    wSlider.value = Math.round(v * 2.20462);
+    this.textContent = "kg";
+  } else {
+    wUnit = "kg";
+    wSlider.min = 40; wSlider.max = 150; wSlider.step = 1;
+    wSlider.value = Math.round(v / 2.20462);
+    this.textContent = "lbs";
+  }
+  recalc();
 };
 
-// Speed buttons — step 0.5 km/h (or ~0.5 mph worth = 0.8 km/h)
-document.getElementById("sDown").onclick = function() {
-  var step = sUnit === "mph" ? 0.80467 : 0.5;
-  sKmh = Math.max(8, parseFloat((sKmh - step).toFixed(2)));
-  render();
-};
-document.getElementById("sUp").onclick = function() {
-  var step = sUnit === "mph" ? 0.80467 : 0.5;
-  sKmh = Math.min(50, parseFloat((sKmh + step).toFixed(2)));
-  render();
-};
-document.getElementById("sTog").onclick = function() {
-  sUnit = (sUnit === "kmh") ? "mph" : "kmh";
-  this.textContent = "switch to " + (sUnit === "kmh" ? "mph" : "km/h");
-  render();
-};
-
-// Duration buttons — step 5 min
-document.getElementById("dDown").onclick = function() {
-  dMin = Math.max(5, dMin - 5); render();
-};
-document.getElementById("dUp").onclick = function() {
-  dMin = Math.min(480, dMin + 5); render();
+document.getElementById("sBtn").onclick = function() {
+  var v = parseFloat(sSlider.value);
+  if (sUnit === "kmh") {
+    sUnit = "mph";
+    sSlider.min = 6; sSlider.max = 22; sSlider.step = 0.5;
+    sSlider.value = (v / 1.60934).toFixed(1);
+    this.textContent = "km/h";
+  } else {
+    sUnit = "kmh";
+    sSlider.min = 10; sSlider.max = 36; sSlider.step = 0.5;
+    sSlider.value = (v * 1.60934).toFixed(1);
+    this.textContent = "mph";
+  }
+  recalc();
 };
 
-render();
+recalc();
 </script>
 </body>
 </html>
